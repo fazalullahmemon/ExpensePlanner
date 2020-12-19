@@ -52,6 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // Transaction(
     //     id: 't2', title: 'Three Piece', amount: 500, date: DateTime.now()),
   ];
+
   List<Transaction> get _recentTransactions {
     return _userTransactions.where((tx) {
       return tx.date.isAfter(DateTime.now().subtract(Duration(days: 7)));
@@ -88,24 +89,35 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Expense Planner',
-        ),
-        actions: [
-          IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () => _promptAddNewTransaction(context))
-        ],
+    final appBar = AppBar(
+      title: Text(
+        'Expense Planner',
       ),
+      actions: [
+        IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () => _promptAddNewTransaction(context))
+      ],
+    );
+    return Scaffold(
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
             // mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Chart(_recentTransactions),
-              TransactionList(_userTransactions, _deleteTransaction)
+              Container(
+                  height: (MediaQuery.of(context).size.height -
+                          appBar.preferredSize.height -
+                          MediaQuery.of(context).padding.top) *
+                      0.27,
+                  child: Chart(_recentTransactions)),
+              Container(
+                  height: (MediaQuery.of(context).size.height -
+                          appBar.preferredSize.height -
+                          MediaQuery.of(context).padding.top) *
+                      0.6,
+                  child: TransactionList(_userTransactions, _deleteTransaction))
             ]),
       ),
       floatingActionButton: FloatingActionButton(
