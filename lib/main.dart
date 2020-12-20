@@ -1,11 +1,12 @@
-import 'package:ExpensePlanner/widgets/chart.dart';
-import 'package:ExpensePlanner/widgets/transaction_list.dart';
+import 'dart:io';
+
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import './widgets/new_transaction.dart';
 
 import './widgets/transaction_list.dart';
-import 'package:flutter/material.dart';
 import './models/transaction.dart';
+import './widgets/chart.dart';
+import './widgets/new_transaction.dart';
 
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -92,8 +93,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final _isLandscape =
-        MediaQuery.of(context).orientation == Orientation.landscape;
+    final mediaQuery = MediaQuery.of(context);
+    final _isLandscape = mediaQuery.orientation == Orientation.landscape;
     final appBar = AppBar(
       title: Text(
         'Expense Planner',
@@ -105,9 +106,9 @@ class _MyHomePageState extends State<MyHomePage> {
       ],
     );
     final _transactionListWidget = Container(
-        height: (MediaQuery.of(context).size.height -
+        height: (mediaQuery.size.height -
                 appBar.preferredSize.height -
-                MediaQuery.of(context).padding.top) *
+                mediaQuery.padding.top) *
             0.7,
         child: TransactionList(_userTransactions, _deleteTransaction));
 
@@ -120,9 +121,10 @@ class _MyHomePageState extends State<MyHomePage> {
             children: [
               if (_isLandscape)
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text('Show Chart'),
-                    Switch(
+                    Switch.adaptive(
                       value: _showChart,
                       onChanged: (val) {
                         setState(() {
@@ -134,26 +136,28 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               if (!_isLandscape)
                 Container(
-                    height: (MediaQuery.of(context).size.height -
+                    height: (mediaQuery.size.height -
                             appBar.preferredSize.height -
-                            MediaQuery.of(context).padding.top) *
+                            mediaQuery.padding.top) *
                         0.3,
                     child: Chart(_recentTransactions)),
               if (!_isLandscape) _transactionListWidget,
               if (_isLandscape)
                 _showChart
                     ? Container(
-                        height: (MediaQuery.of(context).size.height -
+                        height: (mediaQuery.size.height -
                                 appBar.preferredSize.height -
-                                MediaQuery.of(context).padding.top) *
+                                mediaQuery.padding.top) *
                             1,
                         child: Chart(_recentTransactions))
                     : _transactionListWidget
             ]),
       ),
-      floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          onPressed: () => _promptAddNewTransaction(context)),
+      floatingActionButton: Platform.isIOS
+          ? Container()
+          : FloatingActionButton(
+              child: Icon(Icons.add),
+              onPressed: () => _promptAddNewTransaction(context)),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
