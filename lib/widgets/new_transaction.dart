@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -55,23 +58,36 @@ class _NewTransactionState extends State<NewTransaction> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              TextField(
-                controller: _titleController,
-                onChanged: (value) {
-                  // titleInput = value;
-                },
-                onSubmitted: (_) => _submitData(),
-                decoration: InputDecoration(labelText: 'Title'),
-              ),
-              TextField(
-                controller: _amountController,
-                onChanged: (value) {
-                  // amountInput = value;
-                },
-                decoration: InputDecoration(labelText: 'Amount'),
-                keyboardType: TextInputType.number,
-                onSubmitted: (_) => _submitData(),
-              ),
+              Platform.isIOS
+                  ? CupertinoTextField(
+                      placeholder: 'Title',
+                      controller: _titleController,
+                      onSubmitted: (_) => _submitData(),
+                    )
+                  : TextField(
+                      controller: _titleController,
+                      onChanged: (value) {
+                        // titleInput = value;
+                      },
+                      onSubmitted: (_) => _submitData(),
+                      decoration: InputDecoration(labelText: 'Title'),
+                    ),
+              Platform.isIOS
+                  ? CupertinoTextField(
+                      placeholder: 'Amount',
+                      controller: _amountController,
+                      onSubmitted: (_) => _submitData(),
+                      keyboardType: TextInputType.number,
+                    )
+                  : TextField(
+                      controller: _amountController,
+                      onChanged: (value) {
+                        // amountInput = value;
+                      },
+                      decoration: InputDecoration(labelText: 'Amount'),
+                      keyboardType: TextInputType.number,
+                      onSubmitted: (_) => _submitData(),
+                    ),
               Container(
                 height: 70,
                 child: Row(
@@ -81,14 +97,22 @@ class _NewTransactionState extends State<NewTransaction> {
                           ? 'No Date Choosen'
                           : 'Picked Date: ${DateFormat.yMd().format(_selectedDate)}'),
                     ),
-                    FlatButton(
-                      onPressed: popDatePicker,
-                      child: Text(
-                        'Choose Date',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      textColor: Theme.of(context).primaryColor,
-                    )
+                    Platform.isIOS
+                        ? CupertinoButton(
+                            onPressed: popDatePicker,
+                            child: Text(
+                              'Choose Date',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          )
+                        : FlatButton(
+                            onPressed: popDatePicker,
+                            child: Text(
+                              'Choose Date',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            textColor: Theme.of(context).primaryColor,
+                          )
                   ],
                 ),
               ),

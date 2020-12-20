@@ -19,26 +19,29 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Expense Planner',
-      theme: ThemeData(
-        textTheme: ThemeData.light().textTheme.copyWith(
-            button: TextStyle(color: Colors.white),
-            headline6: TextStyle(
-              fontFamily: 'Open Sans',
-              fontSize: 18,
-            )),
-        appBarTheme: AppBarTheme(
-            textTheme: ThemeData.light().textTheme.copyWith(
-                headline6: TextStyle(fontFamily: 'Open Sans', fontSize: 20))),
-        fontFamily: 'Quicksand',
-        primarySwatch: Colors.indigo,
-        accentColor: Colors.purple,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: MyHomePage(),
-    );
+    return Platform.isIOS
+        ? CupertinoApp()
+        : MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Expense Planner',
+            theme: ThemeData(
+              textTheme: ThemeData.light().textTheme.copyWith(
+                  button: TextStyle(color: Colors.white),
+                  headline6: TextStyle(
+                    fontFamily: 'Open Sans',
+                    fontSize: 18,
+                  )),
+              appBarTheme: AppBarTheme(
+                  textTheme: ThemeData.light().textTheme.copyWith(
+                      headline6:
+                          TextStyle(fontFamily: 'Open Sans', fontSize: 20))),
+              fontFamily: 'Quicksand',
+              primarySwatch: Colors.indigo,
+              accentColor: Colors.purple,
+              visualDensity: VisualDensity.adaptivePlatformDensity,
+            ),
+            home: MyHomePage(),
+          );
   }
 }
 
@@ -102,6 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
               'Expense Planner',
             ),
             trailing: Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 GestureDetector(
                     child: Icon(CupertinoIcons.add),
@@ -125,7 +129,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 mediaQuery.padding.top) *
             0.7,
         child: TransactionList(_userTransactions, _deleteTransaction));
-    final mainBody = SingleChildScrollView(
+    final mainBody = SafeArea(
+        child: SingleChildScrollView(
       child: Column(
           // mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -134,7 +139,8 @@ class _MyHomePageState extends State<MyHomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Show Chart'),
+                  Text('Show Chart',
+                      style: Theme.of(context).textTheme.headline6),
                   Switch.adaptive(
                     value: _showChart,
                     onChanged: (val) {
@@ -163,7 +169,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Chart(_recentTransactions))
                   : _transactionListWidget
           ]),
-    );
+    ));
     return Platform.isIOS
         ? CupertinoPageScaffold(
             navigationBar: appBar,
