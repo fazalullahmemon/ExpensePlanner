@@ -4,6 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import './adaptiveTextField.dart';
+import './adaptiveFlatButton.dart';
+
 class NewTransaction extends StatefulWidget {
   final Function addTx;
 
@@ -28,7 +31,7 @@ class _NewTransactionState extends State<NewTransaction> {
     Navigator.of(context).pop();
   }
 
-  void popDatePicker() {
+  void _popDatePicker() {
     showDatePicker(
             context: context,
             initialDate: DateTime.now(),
@@ -72,22 +75,7 @@ class _NewTransactionState extends State<NewTransaction> {
                       onSubmitted: (_) => _submitData(),
                       decoration: InputDecoration(labelText: 'Title'),
                     ),
-              Platform.isIOS
-                  ? CupertinoTextField(
-                      placeholder: 'Amount',
-                      controller: _amountController,
-                      onSubmitted: (_) => _submitData(),
-                      keyboardType: TextInputType.number,
-                    )
-                  : TextField(
-                      controller: _amountController,
-                      onChanged: (value) {
-                        // amountInput = value;
-                      },
-                      decoration: InputDecoration(labelText: 'Amount'),
-                      keyboardType: TextInputType.number,
-                      onSubmitted: (_) => _submitData(),
-                    ),
+              AdaptiveTextField('Amount', _amountController, _submitData),
               Container(
                 height: 70,
                 child: Row(
@@ -97,22 +85,7 @@ class _NewTransactionState extends State<NewTransaction> {
                           ? 'No Date Choosen'
                           : 'Picked Date: ${DateFormat.yMd().format(_selectedDate)}'),
                     ),
-                    Platform.isIOS
-                        ? CupertinoButton(
-                            onPressed: popDatePicker,
-                            child: Text(
-                              'Choose Date',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          )
-                        : FlatButton(
-                            onPressed: popDatePicker,
-                            child: Text(
-                              'Choose Date',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            textColor: Theme.of(context).primaryColor,
-                          )
+                    AdaptiveFlatButton('Choose Date', _popDatePicker)
                   ],
                 ),
               ),
